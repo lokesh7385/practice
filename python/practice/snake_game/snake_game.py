@@ -3,7 +3,7 @@ import random
 #setting
 GAME_WIDTH = 600  #screen width
 GAME_HEIGHT = 600  # screen height 
-SNAKE_SPEED = 100  #snake speed of movement 
+SNAKE_SPEED = 50  #snake speed of movement 
 SPACE_SIZE = 40   # size of everything snake and food
 BODY_SIZE = 3      # number of body part at the starting of the game 
 SNAKE_COLOR = "#00FF00"

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Countdown Wallpaper</string>
+    <string name="title_hint">Event Title</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="save_settings">Save &amp; Apply</string>
+    <string name="select_mode">Select Countdown Mode</string>
+    <string name="saved_message">Settings Saved! Apply wallpaper to see changes.</string>
+</resources>

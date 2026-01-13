@@ -1,0 +1,166 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.livewallpapercountdown"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <!-- Permission required to set a live wallpaper -->
+12    <uses-feature
+12-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:6:5-92
+13        android:name="android.software.live_wallpaper"
+13-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:6:19-65
+14        android:required="true" />
+14-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:6:66-89
+15
+16    <permission
+16-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+17        android:name="com.example.livewallpapercountdown.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+17-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+18        android:protectionLevel="signature" />
+18-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+19
+20    <uses-permission android:name="com.example.livewallpapercountdown.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+20-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+20-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+21
+22    <application
+22-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:8:5-43:19
+23        android:allowBackup="true"
+23-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:9:9-35
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.12.0] C:\Users\lokes\.gradle\caches\8.12\transforms\bce4a581b592628684567ebbdc65e12b\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+25        android:debuggable="true"
+26        android:extractNativeLibs="false"
+27        android:icon="@drawable/ic_launcher_foreground"
+27-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:10:9-56
+28        android:label="@string/app_name"
+28-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:11:9-41
+29        android:roundIcon="@drawable/ic_launcher_foreground"
+29-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:12:9-61
+30        android:supportsRtl="true"
+30-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:13:9-35
+31        android:testOnly="true"
+32        android:theme="@style/Theme.LiveWallpaperCountdown" >
+32-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:14:9-60
+33
+34        <!-- Configuration Activity -->
+35        <activity
+35-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:18:9-27:20
+36            android:name="com.example.livewallpapercountdown.ui.MainActivity"
+36-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:19:13-44
+37            android:exported="true"
+37-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:20:13-36
+38            android:label="@string/app_name"
+38-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:21:13-45
+39            android:theme="@style/Theme.LiveWallpaperCountdown" >
+39-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:22:13-64
+40            <intent-filter>
+40-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:23:13-26:29
+41                <action android:name="android.intent.action.MAIN" />
+41-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:24:17-69
+41-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:24:25-66
+42
+43                <category android:name="android.intent.category.LAUNCHER" />
+43-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:25:17-77
+43-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:25:27-74
+44            </intent-filter>
+45        </activity>
+46
+47        <!-- Live Wallpaper Service -->
+48        <service
+48-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:30:9-41:19
+49            android:name="com.example.livewallpapercountdown.service.CountdownWallpaperService"
+49-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:31:13-62
+50            android:exported="true"
+50-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:34:13-36
+51            android:label="@string/app_name"
+51-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:32:13-45
+52            android:permission="android.permission.BIND_WALLPAPER" >
+52-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:33:13-67
+53            <intent-filter>
+53-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:35:13-37:29
+54                <action android:name="android.service.wallpaper.WallpaperService" />
+54-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:36:17-85
+54-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:36:25-82
+55            </intent-filter>
+56
+57            <meta-data
+57-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:38:13-40:53
+58                android:name="android.service.wallpaper"
+58-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:39:17-57
+59                android:resource="@xml/wallpaper" />
+59-->E:\code\live_walpaper\app\src\main\AndroidManifest.xml:40:17-50
+60        </service>
+61
+62        <provider
+62-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+63            android:name="androidx.startup.InitializationProvider"
+63-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+64            android:authorities="com.example.livewallpapercountdown.androidx-startup"
+64-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+65            android:exported="false" >
+65-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+66            <meta-data
+66-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+67                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+67-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+68                android:value="androidx.startup" />
+68-->[androidx.emoji2:emoji2:1.2.0] C:\Users\lokes\.gradle\caches\8.12\transforms\59a7e8b63c3babd8c073d2ebfe4404e7\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+69            <meta-data
+69-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\lokes\.gradle\caches\8.12\transforms\76394c740b2b9eba97cc6d4004626806\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+70-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\lokes\.gradle\caches\8.12\transforms\76394c740b2b9eba97cc6d4004626806\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+71                android:value="androidx.startup" />
+71-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\lokes\.gradle\caches\8.12\transforms\76394c740b2b9eba97cc6d4004626806\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+73-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+74                android:value="androidx.startup" />
+74-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+75        </provider>
+76
+77        <receiver
+77-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+78            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+78-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+79            android:directBootAware="false"
+79-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+80            android:enabled="true"
+80-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+81            android:exported="true"
+81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+82            android:permission="android.permission.DUMP" >
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+83            <intent-filter>
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+84                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+85            </intent-filter>
+86            <intent-filter>
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+87                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+88            </intent-filter>
+89            <intent-filter>
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+90                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+91            </intent-filter>
+92            <intent-filter>
+92-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+93                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\lokes\.gradle\caches\8.12\transforms\32a868405ce996d95b18292ae9c982fc\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+94            </intent-filter>
+95        </receiver>
+96    </application>
+97
+98</manifest>
