@@ -620,7 +620,25 @@
                     </div>
                 </div>
 
-                <!-- 3. Analysis Mode -->
+                <!-- 3. AI Model -->
+                <div class="form-group">
+                    <label class="label">AI Model</label>
+                    <div style="position: relative;">
+                        <select id="model-select"
+                            style="width: 100%; background: var(--glass-input); border: 1px solid var(--glass-border); color: white; padding: 14px 16px; border-radius: var(--radius-md); font-size: 1rem; font-family: var(--font-sans); outline: none; appearance: none; cursor: pointer;">
+                            <option value="openrouter" selected>OpenRouter (Default)</option>
+                            <option value="gemini">Google Gemini</option>
+                            <option value="glm">Zhipu GLM</option>
+                        </select>
+                        <svg style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-tertiary);"
+                            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 4. Analysis Mode -->
                 <div class="form-group">
                     <label class="label">Analysis Mode</label>
                     <div class="mode-options">
@@ -652,7 +670,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Action Button -->
+                <!-- 5. Action Button -->
                 <button class="btn-primary" id="run-btn" onclick="runAnalysis()" disabled>
                     Run Analysis
                 </button>
@@ -861,9 +879,8 @@
             btn.innerHTML = `<div class="spinner"></div> Analyzing locally...`;
 
             try {
-                // Determine model from somewhere? Or default to openrouter/openai as per ui_app.py default
-                // The new UI doesn't have a model selector, defaulting to 'openai' (OpenRouter) as per backend default
-                const model = 'openrouter';
+                // Get selected model
+                const model = document.getElementById('model-select').value;
 
                 const response = await fetch('/analyze', {
                     method: 'POST',
