@@ -3,3 +3,5 @@ google-generativeai
 zhipuai
 openai
 requests
+
+#pip install -r requirements.txt
