@@ -1,5 +1,5 @@
 flask
-requests
 google-generativeai
 zhipuai
 openai
+requests
