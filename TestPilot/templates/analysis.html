@@ -607,16 +607,19 @@
 
                 <!-- 2. Path Input -->
                 <div class="form-group">
-                    <label class="label">Local Path</label>
-                    <input type="text" id="path-input" placeholder="e.g. /home/user/project/main.py"
-                        oninput="validateForm()">
+                    <label class="label">Upload Code</label>
+                    
+                    <input type="file" id="file-upload" onchange="validateForm()" style="display: block; width: 100%; background: var(--glass-input); border: 1px solid var(--glass-border); color: white; padding: 14px 16px; border-radius: var(--radius-md); font-family: var(--font-sans);">
+                    <input type="file" id="folder-upload" webkitdirectory directory multiple onchange="validateForm()" style="display: none; width: 100%; background: var(--glass-input); border: 1px solid var(--glass-border); color: white; padding: 14px 16px; border-radius: var(--radius-md); font-family: var(--font-sans);">
+
                     <div class="helper-text">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                        Local paths only. Nothing is uploaded.
+                        Files are securely analyzed in the cloud and instantly deleted.
                     </div>
                 </div>
 
@@ -844,12 +847,19 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            const input = document.getElementById('path-input');
+            const fileInput = document.getElementById('file-upload');
+            const folderInput = document.getElementById('folder-upload');
+            
             if (method === 'file') {
-                input.placeholder = "e.g. /home/user/project/main.py";
+                fileInput.style.display = 'block';
+                folderInput.style.display = 'none';
+                fileInput.value = ''; // clear on switch
             } else {
-                input.placeholder = "e.g. /home/user/project/";
+                fileInput.style.display = 'none';
+                folderInput.style.display = 'block';
+                folderInput.value = ''; // clear on switch
             }
+            validateForm();
         }
 
         function selectMode(card, mode) {
@@ -861,31 +871,51 @@
         }
 
         function validateForm() {
-            const path = document.getElementById('path-input').value;
             const btn = document.getElementById('run-btn');
-            btn.disabled = path.trim().length === 0;
+            const fileInput = document.getElementById('file-upload');
+            const folderInput = document.getElementById('folder-upload');
+            
+            const isFileMode = fileInput.style.display !== 'none';
+            if (isFileMode) {
+                btn.disabled = fileInput.files.length === 0;
+            } else {
+                btn.disabled = folderInput.files.length === 0;
+            }
         }
 
         async function runAnalysis() {
-            const path = document.getElementById('path-input').value;
             const btn = document.getElementById('run-btn');
             const resultsArea = document.getElementById('results-area');
+            const fileInput = document.getElementById('file-upload');
+            const folderInput = document.getElementById('folder-upload');
 
-            if (!path.trim()) return;
+            const isFileMode = fileInput.style.display !== 'none';
+            const files = isFileMode ? fileInput.files : folderInput.files;
+
+            if (files.length === 0) return;
 
             // Reset UI
             resultsArea.style.display = 'none';
             btn.disabled = true;
-            btn.innerHTML = `<div class="spinner"></div> Analyzing locally...`;
+            btn.innerHTML = `<div class="spinner"></div> Uploading & Analyzing...`;
 
             try {
-                // Get selected model
                 const model = document.getElementById('model-select').value;
+                const formData = new FormData();
+                formData.append('model', model);
+                
+                // Track actual paths for folder structure (webkitRelativePath)
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    // If webkitRelativePath exists (folder upload), append it to preserve structure
+                    const path = file.webkitRelativePath || file.name;
+                    formData.append('files', file);
+                    formData.append('paths', path);
+                }
 
                 const response = await fetch('/analyze', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ path: path, model: model })
+                    body: formData // No Content-Type header needed for FormData inside fetch
                 });
 
                 const data = await response.json();
@@ -944,10 +974,8 @@
                     if (isRisky) {
                         fixBtnHtml = `<button class="btn-fix" disabled title="Manual fix required for high severity">Manual Fix Required</button>`;
                     } else {
-                        // We pass index to identify issue in the backend global store
-                        // We escape path for JS string
-                        const safePath = data.path.replace(/\\/g, '\\\\');
-                        fixBtnHtml = `<button class="btn-fix" onclick="confirmFix(this, '${safePath}', ${index})">Apply Fix</button>`;
+                        // Cloud mode disables Apply Fix as local copy isn't affected.
+                        fixBtnHtml = `<button class="btn-fix" disabled title="Auto-patching is disabled in Cloud Mode">Cloud Fix Disabled</button>`;
                     }
                 }
 

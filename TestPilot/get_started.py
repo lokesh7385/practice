@@ -1,6 +1,8 @@
 import os
 import shutil
 import re
+import tempfile
+import uuid
 from flask import Flask, render_template, request, jsonify, send_from_directory
 # Connect to TestPilot Engine
 import main
@@ -21,34 +23,60 @@ def analysis():
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    data = request.json
-    path = data.get('path')
-    if path:
-        path = path.strip().strip('"').strip("'")
-    
-    model = data.get('model', 'openai')
-    
-    if not path:
-        return jsonify({"error": "Path is required"}), 400
+    # In cloud mode, files and paths come via form data
+    model = request.form.get('model', 'openai')
+    files = request.files.getlist('files')
+    paths = request.form.getlist('paths')
+
+    if not files or files[0].filename == '':
+        return jsonify({"error": "No files uploaded"}), 400
 
     try:
-        # Call TestPilot Engine
         keys = main.get_api_keys()
         
-        # Check if folder or file
-        is_folder = os.path.isdir(path)
+        # Create Secure Temp Directory
+        session_id = str(uuid.uuid4())
+        temp_dir = os.path.join(tempfile.gettempdir(), f"testpilot_{session_id}")
+        os.makedirs(temp_dir, exist_ok=True)
         
-        # Use the refactored analyze_path function
-        raw_response = main.analyze_path(path, model, keys, is_folder=is_folder)
+        is_folder = len(files) > 1
+        
+        # Save files to temp directory
+        for i, file_obj in enumerate(files):
+            # Paths might include subdirectories (e.g., project/src/main.py)
+            rel_path = paths[i] if i < len(paths) else file_obj.filename
+            # Sanitize security risk: avoid absolute path traversal
+            safe_rel_path = rel_path.lstrip('/').lstrip('\\')
+            safe_rel_path = os.path.normpath(safe_rel_path)
+            if safe_rel_path.startswith('..'): continue
+                
+            full_save_path = os.path.join(temp_dir, safe_rel_path)
+            os.makedirs(os.path.dirname(full_save_path), exist_ok=True)
+            
+            file_obj.save(full_save_path)
+        
+        # Determine the root path to pass to main.py
+        # If it's a folder, we pass the root of the temp dir. 
+        # If it's a single file, we pass the path to the single file.
+        target_path = temp_dir if is_folder else os.path.join(temp_dir, os.path.normpath(paths[0].lstrip('/').lstrip('\\')))
+        
+        # Run local TestPilot Engine on the temp files
+        raw_response = main.analyze_path(target_path, model, keys, is_folder=is_folder)
+        
+        # Clean up temp files immediately since we are in cloud mode
+        try:
+            shutil.rmtree(temp_dir)
+        except:
+            pass
         
         if raw_response.strip().startswith("[") and "ERROR" in raw_response:
              return jsonify({"error": raw_response}), 400
         
         # Parse the structured AI response into JSON
         structured_data = parse_ai_response(raw_response)
-        structured_data['path'] = path # Return path for context
+        structured_data['path'] = "Uploaded Project/File" # Return friendly name since actual path is a temp UUID
         
-        # Store for apply-fix reference
+        # Store for apply-fix reference (even though apply-fix is disabled in UI, we save it)
         global LATEST_ANALYSIS
         LATEST_ANALYSIS = structured_data
         
@@ -56,88 +84,15 @@ def analyze():
     except Exception as e:
         import traceback
         traceback.print_exc()
+        try:
+            shutil.rmtree(temp_dir)
+        except:
+            pass
         return jsonify({"error": f"Server Error: {str(e)}"}), 500
 
 @app.route('/apply-fix', methods=['POST'])
 def apply_fix():
-    data = request.json
-    file_path_arg = data.get('file_path') # This might be project path if folder mode
-    issue_index = data.get('issue_index')
-    
-    global LATEST_ANALYSIS
-    if not LATEST_ANALYSIS or 'issues' not in LATEST_ANALYSIS:
-        return jsonify({"success": False, "error": "No active analysis found. Please re-run analysis."}), 400
-
-    try:
-        issue = LATEST_ANALYSIS['issues'][issue_index]
-    except IndexError:
-        return jsonify({"success": False, "error": "Invalid issue index."}), 400
-
-    # Security / Integrity Check
-    if issue['severity'] in ['CRITICAL', 'MAJOR']:
-         return jsonify({"success": False, "error": "Cannot auto-fix CRITICAL or MAJOR issues. Please apply manually."}), 403
-    
-    if not issue.get('suggested_fix_code'):
-        return jsonify({"success": False, "error": "No code fix available for this issue."}), 400
-
-    code_to_apply = issue['suggested_fix_code']
-    
-    # Determine actual file to edit
-    # If folder analysis, we need to know WHICH file. 
-    # Current "analyze_path" output for folders might not explicitly tag every single issue with a filename in a machine-readable way 
-    # UNLESS the prompt enforces it per issue. 
-    # Looking at prompt: "Global Output: List of Issues". It doesn't strictly force "File: <name>" per issue.
-    # CRITICAL GAP: If analyzing a folder, we don't know which file to fix.
-    # FALLBACK: For MVP context, we will assume Single File Mode for auto-fix OR try to guess from description?
-    # BETTER: If folder mode, we disable auto-fix in UI or check if file path is part of issue.
-    # Let's check constraints: "If a suggested fix cannot be applied with HIGH CONFIDENCE... DO NOT APPLY IT."
-    
-    target_file = file_path_arg
-    
-    # If input was a folder, we need the specific file.
-    if os.path.isdir(file_path_arg):
-        # We can't safely know the file without more parsing logic or prompt change.
-        return jsonify({"success": False, "error": "Auto-fix in Folder Mode is not supported in this version (Target file ambiguous)."}), 400
-
-    # Backup
-    if not os.path.exists(target_file):
-        return jsonify({"success": False, "error": "Target file not found."}), 404
-        
-    backup_path = target_file + ".bak"
-    shutil.copy2(target_file, backup_path)
-    
-    # Apply Strategy: Strict Match Replacement
-    # Since we can't do fuzzy matching safely, we will try:
-    # 1. READ file
-    # 2. CHECK if `code_to_apply` looks like a replacement block?
-    # The prompt says "Suggested Fix... Presented clearly as a code snippet".
-    # It doesn't say "Search Block" and "Replace Block".
-    # Most likely the AI returns just the NEW code.
-    # If the AI returns just the new function, we might APPEND it?
-    # Or if it returns the whole fixed function?
-    # Constraint: "The fix is either: A direct string replacement... OR An explicit append instruction"
-    # To be SAFE: We will attempt to Append to end of file if it looks like a new function/block.
-    # If it looks like a modification, we will REJECT IT for Manual Application unless we implement a diff patcher.
-    # Given MVP constraints: We will try to APPEND if file doesn't contain it, OR return "Manual Required" if ambiguous.
-    
-    # Let's try a simple APPEND approach for now (common for 'missing function' fixes).
-    
-    try:
-        with open(target_file, "r", encoding="utf-8") as f:
-            content = f.read()
-            
-        # Check if code already exists (duplicates)
-        if code_to_apply.strip() in content:
-             return jsonify({"success": False, "error": "Fix seems to already exist in file."})
-
-        # Append
-        with open(target_file, "a", encoding="utf-8") as f:
-            f.write("\n\n" + code_to_apply + "\n")
-            
-        return jsonify({"success": True, "message": "Fix appended to file."})
-        
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)})
+    return jsonify({"success": False, "error": "Auto-patching is not supported when files are uploaded to the cloud server. Please manually apply the Suggested Fix."}), 400
 
 
 def parse_ai_response(text):
