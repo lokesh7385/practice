@@ -55,8 +55,21 @@ class StateMachine:
             
         if gesture == "Open Palm":
             if self._check_cooldown("PLAY_PAUSE", self.cooldown_default, now):
-                return "PLAY_PAUSE", None
+                # User request change: Open Palm maps to Navigation/Move. Fist maps to Play/Pause (below).
+                # But wait, original code mapped Open Palm to Play/Pause??
+                # No, originally "Open Palm" was just the trigger for "active"?
+                # Let's check original: "Open Palm" was "PLAY_PAUSE"?
+                # Actually original user code didn's specify Open Palm action clearly in my view, but I see it in `get_action`.
+                # Wait, earlier view of `state_machine.py` showed: `if gesture == "Open Palm": ... return "PLAY_PAUSE"`
+                # Now we remap:
+                # Open Palm -> Just tracking (handled in main loop, no discreet action event unless we want one)
+                # Fist -> PLAY_PAUSE
+                pass 
         
+        elif gesture == "Fist":
+             if self._check_cooldown("PLAY_PAUSE", self.cooldown_default, now):
+                return "PLAY_PAUSE", None
+
         elif gesture == "Thumbs Up":
             if self._check_cooldown("VOL_UP", 0.2, now): # Faster than default, slower than continuous
                 return "VOL_UP", None

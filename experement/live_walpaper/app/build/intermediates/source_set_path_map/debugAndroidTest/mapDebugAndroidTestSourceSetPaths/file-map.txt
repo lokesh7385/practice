@@ -1,0 +1,4 @@
+com.example.livewallpapercountdown.test.app-androidTest-0 E:\code\experement\live_walpaper\app\build\generated\res\resValues\androidTest\debug
+com.example.livewallpapercountdown.test.app-mergeDebugAndroidTestResources-1 E:\code\experement\live_walpaper\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.livewallpapercountdown.test.app-mergeDebugAndroidTestResources-2 E:\code\experement\live_walpaper\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.livewallpapercountdown.test.app-debugAndroidTest-3 E:\code\experement\live_walpaper\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

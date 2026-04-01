@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.experement.accountability.app-merged_res-65:/drawable_ic_logo.xml.flat",
+        "source": "com.experement.accountability.app-main-67:/drawable/ic_logo.xml"
+    },
+    {
+        "merged": "com.experement.accountability.app-merged_res-65:/xml_data_extraction_rules.xml.flat",
+        "source": "com.experement.accountability.app-main-67:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.experement.accountability.app-merged_res-65:/xml_backup_rules.xml.flat",
+        "source": "com.experement.accountability.app-main-67:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.experement.accountability.app-merged_res-65:/xml_accessibility_service_config.xml.flat",
+        "source": "com.experement.accountability.app-main-67:/xml/accessibility_service_config.xml"
+    }
+]

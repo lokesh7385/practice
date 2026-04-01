@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">The Gatekeeper</string>
+    <string name="accessibility_service_description">Enables The Gatekeeper to intercept distracting apps and enforce focus.</string>
+</resources>

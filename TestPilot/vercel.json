@@ -1,14 +1,26 @@
 {
     "builds": [
         {
-            "src": "ui_app.py",
+            "src": "get_started.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
+            "src": "/analysis",
+            "dest": "get_started.py"
+        },
+        {
+            "src": "/analyze",
+            "dest": "get_started.py"
+        },
+        {
+            "src": "/apply-fix",
+            "dest": "get_started.py"
+        },
+        {
             "src": "/(.*)",
-            "dest": "ui_app.py"
+            "dest": "/$1"
         }
     ]
 }

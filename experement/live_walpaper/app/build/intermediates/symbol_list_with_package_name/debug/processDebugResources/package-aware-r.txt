@@ -3182,6 +3182,7 @@ id bounceEnd
 id bounceStart
 id btnDate
 id btnSave
+id btnSetWallpaper
 id btnTime
 id buttonPanel
 id cache_measures

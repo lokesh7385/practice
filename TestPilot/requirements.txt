@@ -3,5 +3,6 @@ google-generativeai
 zhipuai
 openai
 requests
+gunicorn
 
 #pip install -r requirements.txt

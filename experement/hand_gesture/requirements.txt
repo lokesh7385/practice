@@ -3,3 +3,5 @@ mediapipe
 pyautogui
 pycaw
 comtypes
+
+# py -3.10 e:/code/experement/hand_gesture/main.py

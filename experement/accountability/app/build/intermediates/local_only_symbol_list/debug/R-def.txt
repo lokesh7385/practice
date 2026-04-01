@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable ic_logo
+string accessibility_service_description
+string app_name
+style Theme.Accountability
+xml accessibility_service_config
+xml backup_rules
+xml data_extraction_rules

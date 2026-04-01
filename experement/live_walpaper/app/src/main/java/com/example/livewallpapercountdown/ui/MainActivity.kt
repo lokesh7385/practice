@@ -15,7 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.livewallpapercountdown.R
 import com.example.livewallpapercountdown.data.PreferenceManager
-import com.example.livewallpapercountdown.service.CountdownWallpaperService
+import com.example.livewallpapercountdown.service.YearProgressWallpaperService
 import com.example.livewallpapercountdown.utils.CountdownMode
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         val btnDate = findViewById<Button>(R.id.btnDate)
         val btnTime = findViewById<Button>(R.id.btnTime)
         val btnSave = findViewById<Button>(R.id.btnSave)
+        val btnSetWallpaper = findViewById<Button>(R.id.btnSetWallpaper)
 
         // Setup Mode Spinner
         setupSpinner()
@@ -58,6 +59,10 @@ class MainActivity : AppCompatActivity() {
         
         btnSave.setOnClickListener {
             saveSettings()
+        }
+
+        btnSetWallpaper.setOnClickListener {
+            promptSetWallpaper()
         }
     }
 
@@ -122,18 +127,19 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, getString(R.string.saved_message), Toast.LENGTH_SHORT).show()
         
-        promptSetWallpaper()
+        Toast.makeText(this, getString(R.string.saved_message), Toast.LENGTH_SHORT).show()
     }
 
     private fun promptSetWallpaper() {
         val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
         intent.putExtra(
             WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-            ComponentName(this, CountdownWallpaperService::class.java)
+            ComponentName(this, YearProgressWallpaperService::class.java)
         )
         // Check if intent handles exist (some devices might behavior differently)
         try {
             startActivity(intent)
+            Toast.makeText(this, "Select 'Home' or 'Home and Lock' in the next screen", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Toast.makeText(this, "Go to Settings -> Wallpaper to apply.", Toast.LENGTH_LONG).show()
         }
